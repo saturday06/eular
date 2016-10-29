@@ -6,6 +6,7 @@ module ProblemSpec where
 
 import           ClassyPrelude
 import           Test.Hspec
+import           Debug.Trace
 
 problem1 :: Int
 problem1 = foldr (+) 0 [x | x <- [1..999], x `mod` 5 == 0 || x `mod` 3 == 0]
@@ -23,6 +24,24 @@ problem3 child mother
   | mother `mod` child == 0 = problem3 (child + 1) (mother `div` child)
   | otherwise = problem3 (child + 1) mother
 
+isPalindrome :: Int -> Bool
+isPalindrome = isPalindrome' . show
+
+isPalindrome' :: String -> Bool
+isPalindrome' x
+  | length x <= 1 = True
+  | otherwise = if (take 1 x) == (take 1 $ reverse x) then isPalindrome' $ reverse $ drop 1 $ reverse $ drop 1 x else False
+
+problem4 :: Int -> Int -> [Int]
+problem4 l r
+  | l <= 0 = []
+  | r <= 0 = problem4 (l - 1) (l - 1)
+  | isPalindrome $ l * r = ([l * r] ++ problem4 l (r - 1))
+  | otherwise = problem4 l (r - 1)
+
+problem4' :: Int -> [Int]
+problem4' x = take 1 $ reverse $ sort $ problem4 x x
+
 spec :: Spec
 spec = do
   describe "problem1" $ do
@@ -32,3 +51,8 @@ spec = do
       problem2 `shouldBe` 4613732
       problem3 1 14 `shouldBe` 7
       problem3 1 600851475143 `shouldBe` 6857
+      isPalindrome 1 `shouldBe` True
+      isPalindrome 10 `shouldBe` False
+      isPalindrome 101 `shouldBe` True
+      problem4' 99 `shouldBe` [9009]
+      problem4' 999 `shouldBe` [906609]
