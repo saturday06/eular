@@ -53,10 +53,20 @@ problem6 x = sos2 - sos1
     sos1 = sum $ map (\x -> x * x) [1..x]
     sos2 = sum [1..x] * sum [1..x]
 
+problem7 :: Int -> Int -> [Int] -> Int
+problem7 l x primes
+  | length primes == l = sum $ take 1 primes
+  | otherwise = if all (\y -> x `mod` y /= 0) primes then
+                  problem7 l (x+1) (x:primes)
+                else
+                  problem7 l (x+1) primes
+
 spec :: Spec
 spec =
   describe "problem1" $
     it "works!" $ do
+      problem7 10001 2 [2] `shouldBe` 13
+      problem7 6 2 [2] `shouldBe` 13
       problem6 100 `shouldBe` 25164150
       problem6 10 `shouldBe` 2640
       problem5 10 1 `shouldBe` 2520
