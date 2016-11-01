@@ -44,13 +44,21 @@ problem4' x = take 1 $ sortBy (flip compare) (problem4 x x)
 
 problem5 :: Int -> Int -> Int
 problem5 x y
-  | foldr (&&) True $ map (\z -> y `mod` z == 0) [1..x] = y
+  | all (\z -> y `mod` z == 0) [1..x] = y
   | otherwise = problem5 x $ y + 1
+
+problem6 :: Int -> Int
+problem6 x = sos2 - sos1
+  where
+    sos1 = sum $ map (\x -> x * x) [1..x]
+    sos2 = sum [1..x] * sum [1..x]
 
 spec :: Spec
 spec =
   describe "problem1" $
     it "works!" $ do
+      problem6 100 `shouldBe` 25164150
+      problem6 10 `shouldBe` 2640
       problem5 10 1 `shouldBe` 2520
       -- problem5 20 1 `shouldBe` -1
       problem1 `shouldBe` 233168
